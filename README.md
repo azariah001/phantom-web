@@ -1,6 +1,16 @@
 # Phantom Web
 
-Phantom Web is a Node.js based web wrapper for [Phantom](//github.com/jhead/phantom) by [jhead](//github.com/jhead). Phantom is a server repeater project that allows console players on Xbox and Playstation (note: as per jhead there is no support for Switch at time of publishing) to access custom Bedrock servers (also known as PE on some platforms). Phantom Web was built to a specific spec that allows deployment of Raspberry Pi's as configure once deploy anywhere server repeaters, great if you're hosting servers for friends and especially helpful if you have a mix of platforms and want an easy solution. What follows are instructions that will allow you to meet this spec using this project. The web UI also allows for relatively easy editing and configuration of additional servers by the end user should it become desirable.
+Phantom Web is a Node.js based web wrapper for [phantom](//github.com/jhead/phantom) by [jhead](//github.com/jhead). Phantom is a server repeater project that allows console players on Xbox and Playstation (note: as per jhead there is no support for Switch at time of publishing) to access custom Bedrock servers (also known as PE on some platforms). Phantom Web was built to a specific spec that allows deployment of Raspberry Pi's as configure once deploy anywhere server repeaters, great if you're hosting servers for friends and especially helpful if you have a mix of platforms and want an easy solution. What follows are instructions that will allow you to meet this spec using this project. The web UI also allows for relatively easy editing and configuration of additional servers by the end user should it become desirable.
+
+#### Familiar UI
+![Welcome Page](public/images/screenshots/welcome-page.png)
+
+##### Intuitive controls just click to start/stop servers.
+
+<img src="public/images/screenshots/add-server.png" align="left" width="50%" />
+<img src="public/images/screenshots/edit-server.png" align="right" width="50%" />
+
+
 
 ## Getting Started
 
