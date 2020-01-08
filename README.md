@@ -1,16 +1,18 @@
 # Phantom Web
 
-Phantom Web is a Node.js based web wrapper for [phantom](//github.com/jhead/phantom) by [jhead](//github.com/jhead). Phantom is a server repeater project that allows console players on Xbox and Playstation (note: as per jhead there is no support for Switch at time of publishing) to access custom Bedrock servers (also known as PE on some platforms). Phantom Web was built to a specific spec that allows deployment of Raspberry Pi's as configure once deploy anywhere server repeaters, great if you're hosting servers for friends and especially helpful if you have a mix of platforms and want an easy solution. What follows are instructions that will allow you to meet this spec using this project. The web UI also allows for relatively easy editing and configuration of additional servers by the end user should it become desirable.
+Phantom Web is a Node.js based web wrapper for [phantom](//github.com/jhead/phantom) by [jhead](//github.com/jhead). Phantom is a server repeater project that allows console players on Xbox and Playstation (note: as per jhead there is no support for Switch at time of publishing) to access custom Bedrock servers (also known as PE on some platforms). Phantom Web was built to a specific spec that allows deployment of Raspberry Pi's as configure, once deploy anywhere, server repeaters. They're great if you're hosting servers for friends and especially helpful if you have a mix of platforms and want an easy solution. What follows are instructions that will allow you to meet the spec that guided the development of this project. The web UI also allows for easy editing and configuration of additional servers by the end user should it become desirable.
 
 #### Familiar UI
 ![Welcome Page](public/images/screenshots/welcome-page.png)
 
-##### Intuitive controls just click to start/stop servers.
+##### Intuitive controls, just click your server to start/stop the connection.
 
 <div>
   <img src="public/images/screenshots/add-server.png" style="display: inline-block" width="49.5%" />
   <img src="public/images/screenshots/edit-server.png" style="display: inline-block" width="49.5%" />
 </div>
+
+##### All server configurations that you add are saved in a JSON config file and if you check the Auto option they will automatically start at boot.
 
 ## Getting Started
 
