@@ -7,7 +7,7 @@ Phantom Web is a Node.js based web wrapper for [phantom](//github.com/jhead/phan
 
 ##### Intuitive controls just click to start/stop servers.
 
-<img src="public/images/screenshots/add-server.png" align="left" width="50%" />
+<img src="public/images/screenshots/add-server.png" align="left" width="49%" />
 <img src="public/images/screenshots/edit-server.png" align="right" width="50%" />
 
 
