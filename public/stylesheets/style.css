@@ -1,0 +1,273 @@
+@font-face {
+  font-family: Minecraft;
+  src: url("/fonts/MinecraftRegular.otf") format("opentype");
+}
+
+* {
+  box-sizing: border-box;
+  font: 14px "Minecraft", "Roboto Light", "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: #00B7FF;
+}
+
+h2 {
+  line-height: 28px;
+  font-size: 20px;
+  margin: 0;
+  color: #ffffff;
+  font-weight: lighter;
+}
+
+div {
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  background-image: url("/images/broni-steveoni-eZLbq2qeZXw-unsplash.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+input:hover {
+  border-image: url("/images/input-focus.png") 8 round !important;
+}
+input:focus {
+  outline: none;
+}
+
+.button {
+  text-decoration: none !important;
+  background-color: #c6c6c6 !important;
+  text-align: center !important;
+  color: #4c4c4c !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  height: 60px !important;
+  border: 8px solid transparent !important;
+  border-image: url("/images/button-background.png") 16 round !important;
+}
+.button.server {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: stretch;
+  align-content: stretch;
+  background-color: #3a3a3a !important;
+  border-image: url("/images/server-background.png") 16 round !important;
+}
+.button.server > .name {
+  color: #ffffff;
+  width: 89%;
+  line-height: 22px;
+  font-size: 18px;
+  text-align: left;
+}
+.button.server > .status {
+  color: #b2b2b2;
+  width: 89%;
+  line-height: 22px;
+  font-size: 18px;
+  text-align: left;
+}
+.button.server > .icon {
+  height: 44px;
+  width: 44px;
+}
+.button.server > .icon > img {
+  margin: 14px;
+  width: 16px;
+  height: 16px;
+}
+.button.server.edit {
+  width: 60px;
+  height: 60px;
+}
+.button:hover {
+  border-image: url("/images/button-hover.png") 16 round !important;
+  background-color: #007305 !important;
+}
+.button > p, .button {
+  margin: 0;
+  font-size: 18px;
+  line-height: 42px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: nowrap;
+  height: 100%;
+  width: 100%;
+  padding: 50px 100px;
+}
+
+.menu {
+  height: 100%;
+  width: 100%;
+  max-width: 564px;
+  max-height: 348px;
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  flex-wrap: nowrap;
+  flex-direction: column;
+}
+
+.tab {
+  max-width: 190px;
+  max-height: 68px;
+  border: 16px solid transparent;
+  border-image: url("/images/tab-border.png") 32 round;
+  margin-bottom: -16px;
+  position: relative;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tab > div {
+  background-color: #c6c6c6;
+
+}
+.tab > div.icon {
+  padding: 2px;
+}
+.tab > div.label {
+  width: 100%;
+  line-height: 36px;
+  padding-left: 6px;
+  font-size: 20px;
+}
+
+.content {
+  border: 10px solid transparent;
+  border-image: url("/images/menu-border.png") 20 round;
+  flex-grow: 1;
+  position: relative;
+  max-height: 48vh;
+}
+.content .border {
+  background-color: rgba( 0, 0, 0, 0.5 );
+  height: 100%;
+  width: 100%;
+  padding: 8px;
+  overflow-y: auto;
+  border: 6px solid transparent;
+  border-image: url("/images/menu-surround.png") 12 round;
+}
+
+.content .border > input {
+  display: block;
+  width: 100%;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  border: 4px solid transparent;
+  border-image: url("/images/input-border.png") 8 round;
+  background-color: #5e5e5e;
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 42px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+.content .border > .checkbox {
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+
+.content .border > label {
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 20px;
+  padding-top: 4px;
+}
+.content form {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+  align-content: stretch;
+  flex-direction: column;
+  height: 100%;
+}
+.content .group {
+  background-color: #c6c6c6;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+  align-content: stretch;
+  padding: 4px;
+}
+.content .group > .button {
+  width: 49%;
+  text-align: center;
+}
+
+.title {
+  width: 100%;
+  border: 10px solid transparent;
+  border-image: url("/images/menu-title.png") 20 round;
+  border-bottom: none;
+  margin-bottom: -8px;
+  position: relative;
+  z-index: 200;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  align-content: stretch;
+}
+.title > .text {
+  background-color: #c6c6c6;
+  flex-grow: 1;
+  color: #4c4c4c;
+  font-size: 20px;
+  line-height: 32px;
+  padding: 0 8px;
+}
+.title > .close {
+  background-color: #c6c6c6;
+  height: 32px;
+  width: 32px;
+}
+.title > .close:hover {
+  background-color: #aeaeae;
+}
+.title > .close > img {
+  height: 16px;
+  margin: 8px;
+}
+
+.credit {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+}
+
+.phantom {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+}
+.phantom > img {
+  width: 74px;
+}

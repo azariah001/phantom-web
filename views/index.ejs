@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <div class="phantom"><img src="/images/phantom.gif" alt="Minecraft phantom GIF"></div>
+    
+    <div class="container">
+      <div class="menu">
+        <div class="tab"><div class="icon"><img src="/images/network-icon.png" alt="Minecraft network icon" width="31"></div><div class="label"><%= title %></div></div>
+        <div class="content">
+          <div class="border">
+            <a href="/server/create"><div class="button"><p>Add Server</p></div></a>
+            <h2>More Servers</h2>
+            <% servers.forEach( (server, index) => { %>
+              <div style="display: flex; align-content: stretch; flex-wrap: nowrap">
+                <% if (!server.pid) { %>
+                  <a href="/server/start/<%= index %>" style="display: inline-block; flex-grow: 1;">
+                    <div class="button server">
+                      <div class="name"><%= server.name %></div>
+                      <div class="status">Server Stopped</div>
+                      <div class="icon"><img src="/images/status-red.png" alt="status stopped"></div>
+                    </div>
+                  </a>
+                <% } else { %>
+                  <a href="/server/stop/<%= index %>" style="display: inline-block; flex-grow: 1;">
+                    <div class="button server">
+                      <div class="name"><%= server.name %></div>
+                      <div class="status">Server Running</div>
+                      <div class="icon"><img src="/images/status-green.png" alt="status running"></div>
+                    </div>
+                  </a>
+                <% } %>
+                <a href="/server/edit/<%= index %>" style="display: inline-block; flex-grow: 0;">
+                  <div class="button server edit">
+                    <img src="/images/edit-icon.png" alt="Minecraft edit icon" width="44px">
+                  </div>
+                </a>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="credit"><a style="background-color:black;color:white;text-decoration:none;padding:4px 6px;font-family:-apple-system, BlinkMacSystemFont, &quot;San Francisco&quot;, &quot;Helvetica Neue&quot;, Helvetica, Ubuntu, Roboto, Noto, &quot;Segoe UI&quot;, Arial, sans-serif;font-size:12px;font-weight:bold;line-height:1.2;display:inline-block;border-radius:3px" href="https://unsplash.com/@broni_steveoni?utm_medium=referral&amp;utm_campaign=photographer-credit&amp;utm_content=creditBadge" target="_blank" rel="noopener noreferrer" title="Download free do whatever you want high-resolution photos from Broni Steveoni"><span style="display:inline-block;padding:2px 3px"><svg xmlns="http://www.w3.org/2000/svg" style="height:12px;width:auto;position:relative;vertical-align:middle;top:-2px;fill:white" viewBox="0 0 32 32"><title>unsplash-logo</title><path d="M10 9V0h12v9H10zm12 5h10v18H0V14h10v9h12v-9z"></path></svg></span><span style="display:inline-block;padding:2px 3px">Broni Steveoni</span></a></div>
+  </body>
+</html>
