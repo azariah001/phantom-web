@@ -106,7 +106,7 @@ app.post('/server/edit', (req, res, next) => {
 });
 
 app.get('/server/create', (req,res, next) => {
-  res.render('create', { title: 'Express' });
+  res.render('create', { title: 'Add External Server' });
 });
 
 app.post('/server/create', createServer, (req, res, next) => {
