@@ -25,6 +25,8 @@ async function update() {
     console.log(stdout);
   });
 
+  await sleep(5000);
+
   const newVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
   console.log(`New Version: ${newVersion}`);
 
