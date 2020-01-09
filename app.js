@@ -17,12 +17,14 @@ let config = require("./config.json").servers;
 const currentVersion = require("./package.json").version;
 
 async function update() {
+
   console.log("Updating phantom-web to latest version.");
 
   child_process.exec("git pull", (error, stdout, stderr) => {
     console.log(stdout);
   });
-  const newVersion = require("./package.json").version;
+
+  const newVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
 
   if (currentVersion !== newVersion) {
     console.log("Update Applied - Stopping");
