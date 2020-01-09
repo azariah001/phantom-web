@@ -14,9 +14,23 @@ var http = require('http');
 
 let servers = [];
 let config = require("./config.json").servers;
+const currentVersion = require("./package.json").version;
 
 async function update() {
-// downloads latest version of phantom
+  console.log("Updating phantom-web to latest version.");
+
+  child_process.exec("git pull", (error, stdout, stderr) => {
+    console.log(stdout);
+  });
+  const newVersion = require("./package.json").version;
+
+  if (currentVersion !== newVersion) {
+    console.log("Update Applied - Stopping");
+    await sleep(1000);
+    server.close();
+  }
+
+  // downloads latest version of phantom
   if (process.platform === "linux") {
     if (process.arch === "arm") {
       child_process.exec(`curl -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'arm${process.config.variables.arm_version}' | head -n 1 | cut -d '"' -f 4 | xargs wget -N`)
