@@ -31,6 +31,7 @@ async function update() {
 
   await sleep(5000);
 
+  child_process.exec("chmod 775 app.js");
   child_process.exec("npm install", (error, stdout, stderr) => {
     console.log(stdout);
   });
@@ -48,6 +49,7 @@ async function update() {
     await sleep(1000);
 
     server.close();
+
   }
 
   // downloads latest version of phantom
