@@ -14,7 +14,7 @@ var http = require('http');
 
 let servers = [];
 let config = require("./config.json").servers;
-const currentVersion = require("./package.json").version;
+const currentVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
 
 async function update() {
 
