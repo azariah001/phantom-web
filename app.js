@@ -9,8 +9,11 @@ let express = require('express');
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
-var debug = require('debug')('phantom-web:server');
-var http = require('http');
+let debug = require('debug')('phantom-web:server');
+let http = require('http');
+let later = require('later');
+
+let updateSchedule = later.parse.text('at 03:00am every day');
 
 let servers = [];
 let config = require("./config.json").servers;
@@ -27,6 +30,12 @@ async function update() {
 
   await sleep(5000);
 
+  child_process.exec("npm install", (error, stdout, stderr) => {
+    console.log(stdout);
+  });
+
+  await sleep(10000);
+
   const newVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
   console.log(`New Version: ${newVersion}`);
 
@@ -35,6 +44,7 @@ async function update() {
     await sleep(1000);
     server.close();
   }
+  await sleep(2000);
 
   // downloads latest version of phantom
   if (process.platform === "linux") {
@@ -60,6 +70,8 @@ update().then(() => {
     }
   });
 });
+
+let updateTimer = later.setInterval(update, updateSchedule);
 
 let app = express();
 
