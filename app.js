@@ -15,6 +15,7 @@ var http = require('http');
 let servers = [];
 let config = require("./config.json").servers;
 const currentVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
+console.log(`Current Version: ${currentVersion}`);
 
 async function update() {
 
@@ -25,6 +26,7 @@ async function update() {
   });
 
   const newVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
+  console.log(`New Version: ${newVersion}`);
 
   if (currentVersion !== newVersion) {
     console.log("Update Applied - Stopping");
