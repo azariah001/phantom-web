@@ -14,6 +14,7 @@ let http = require('http');
 let later = require('later');
 
 let updateSchedule = later.parse.text('at 03:00am every day');
+let updateTimer = later.setInterval(update, updateSchedule);
 
 let servers = [];
 let config = require("./config.json").servers;
@@ -40,11 +41,14 @@ async function update() {
   console.log(`New Version: ${newVersion}`);
 
   if (currentVersion !== newVersion) {
+
     console.log("Update Applied - Stopping");
+    updateTimer.clear();
+
     await sleep(1000);
+
     server.close();
   }
-  await sleep(2000);
 
   // downloads latest version of phantom
   if (process.platform === "linux") {
@@ -70,8 +74,6 @@ update().then(() => {
     }
   });
 });
-
-let updateTimer = later.setInterval(update, updateSchedule);
 
 let app = express();
 
