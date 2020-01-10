@@ -13,7 +13,7 @@ let debug = require('debug')('phantom-web:server');
 let http = require('http');
 let later = require('later');
 
-let updateSchedule = later.parse.text('at 03:00am every day');
+let updateSchedule = later.parse.text('at 12:00pm every day');
 let updateTimer = later.setInterval(update, updateSchedule);
 
 let servers = [];
@@ -27,30 +27,25 @@ async function update() {
 
   child_process.exec("git pull", (error, stdout, stderr) => {
     console.log(stdout);
+
+
+    const newVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
+    console.log(`New Version: ${newVersion}`);
+
+    if ( (currentVersion !== newVersion) || (stdout !== "Already up to date.\n") ) {
+
+      installUpdate().then(() => {
+        console.log("Update Applied - Stopping");
+        updateTimer.clear();
+        server.close();
+      });
+
+    }
   });
 
   await sleep(5000);
 
-  child_process.exec("chmod 775 app.js");
-  child_process.exec("npm install", (error, stdout, stderr) => {
-    console.log(stdout);
-  });
 
-  await sleep(10000);
-
-  const newVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
-  console.log(`New Version: ${newVersion}`);
-
-  if (currentVersion !== newVersion) {
-
-    console.log("Update Applied - Stopping");
-    updateTimer.clear();
-
-    await sleep(1000);
-
-    server.close();
-
-  }
 
   // downloads latest version of phantom
   if (process.platform === "linux") {
@@ -67,6 +62,23 @@ async function update() {
     child_process.exec("chmod u+x ./phantom");
   }
   console.log("Phantom Updated")
+}
+
+async function installUpdate() {
+  child_process.exec("sudo chown ubuntu:ubuntu ./ -R", (error, stdout, stderr) => {
+    console.log(`${error}${stdout}${stderr}`);
+  });
+  await sleep(500);
+
+  child_process.exec("sudo chmod 775 ./", (error, stdout, stderr) => {
+    console.log(`${error}${stdout}${stderr}`);
+  });
+  await sleep(500);
+
+  child_process.exec("npm install", (error, stdout, stderr) => {
+    console.log(stdout);
+  });
+  await sleep(10000);
 }
 
 update().then(() => {
