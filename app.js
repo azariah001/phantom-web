@@ -16,6 +16,39 @@ let later = require('later');
 let updateSchedule = later.parse.text('at 03:00am every day');
 let updateTimer = later.setInterval(update, updateSchedule);
 
+let os = require('os');
+let ssdp = require("peer-ssdp");
+let SERVER = os.type() + "/" + os.release() + " UPnP/1.1 famium/0.0.1";
+let uuid = "6bd5eabd-b7c8-4f7b-ae6c-a30ccdeb5988";
+let peer = ssdp.createPeer();
+
+let ifaces = os.networkInterfaces();
+
+/**
+ * handle peer ready event. This event will be emitted after `peer.start()` is called.
+ */
+peer.on("ready",function(){
+  interval = setInterval(function(){
+    peer.alive({
+      HOST: '239.255.255.250:1900',
+      EXT: '',
+      'CACHE-CONTROL': 'max-age=100',
+      LOCATION: "http://{{networkInterfaceAddress}}:3000/desc.xml",
+      SERVER: SERVER,
+      ST: "upnp:rootdevice",
+      USN: "uuid:" + uuid + "::upnp:rootdevice",
+      'BOOTID.UPNP.ORG': 1
+    });
+  }, 1000);
+});
+peer.start();
+
+process.on('exit', function(){
+  clearInterval(interval);
+  // Close peer. Afer peer is closed the `close` event will be emitted.
+  peer.close();
+});
+
 let servers = [];
 let config = require("./config.json").servers;
 const currentVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
@@ -44,8 +77,6 @@ async function update() {
   });
 
   await sleep(5000);
-
-
 
   // downloads latest version of phantom
   if (process.platform === "linux") {
@@ -126,6 +157,35 @@ server.on('listening', onListening);
 
 app.get('/', (req, res, next) => {
   res.render('index', { title: 'Servers', servers: config });
+});
+
+// provide SSDP service description file with servers current IP address.
+app.get('/desc.xml', (req, res, next) => {
+
+  let ip;
+
+  Object.keys(ifaces).forEach(function (ifname) {
+    let alias = 0;
+
+    ifaces[ifname].forEach(function (iface) {
+      if ('IPv4' !== iface.family || iface.internal !== false) {
+        // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+        return;
+      }
+
+      if (alias >= 1) {
+        // this single interface has multiple ipv4 addresses
+        //console.log(ifname + ':' + alias, iface.address);
+      } else {
+        // this interface has only one ipv4 adress
+        ip = iface.address;
+      }
+      ++alias;
+    });
+  });
+
+  res.set('Content-Type', 'text/xml');
+  res.render('desc', { title: 'Servers', ip: ip });
 });
 
 app.get('/server/edit/:index', (req, res, next) => {
@@ -308,7 +368,7 @@ function onListening() {
   var bind = typeof addr === 'string'
       ? 'pipe ' + addr
       : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  console.log('Listening on ' + bind);
 }
 
 module.exports = app;
