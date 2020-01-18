@@ -23,25 +23,34 @@ let uuid = "6bd5eabd-b7c8-4f7b-ae6c-a30ccdeb5988";
 let peer = ssdp.createPeer();
 
 let ifaces = os.networkInterfaces();
-
+const ssdpHeader = {
+  HOST: '239.255.255.250:1900',
+  EXT: '',
+  'CACHE-CONTROL': 'max-age=100',
+  LOCATION: "http://{{networkInterfaceAddress}}:3000/desc.xml",
+  SERVER: SERVER,
+  ST: "upnp:rootdevice",
+  USN: "uuid:" + uuid + "::upnp:rootdevice",
+  'BOOTID.UPNP.ORG': 1
+};
 /**
  * handle peer ready event. This event will be emitted after `peer.start()` is called.
  */
 peer.on("ready",function(){
+  // hey were over here! echo echo echo echo
   interval = setInterval(function(){
-    peer.alive({
-      HOST: '239.255.255.250:1900',
-      EXT: '',
-      'CACHE-CONTROL': 'max-age=100',
-      LOCATION: "http://{{networkInterfaceAddress}}:3000/desc.xml",
-      SERVER: SERVER,
-      ST: "upnp:rootdevice",
-      USN: "uuid:" + uuid + "::upnp:rootdevice",
-      'BOOTID.UPNP.ORG': 1
-    });
+    peer.alive(ssdpHeader);
   }, 1000);
-});
-peer.start();
+}).on("notify", function (headers, address) {
+  // do nothing we don't care
+}).on("search", function (headers, address) {
+  // oh oh oh, yes we're hearing! we're over HERE!
+  peer.reply(ssdpHeader, address);
+}).on("found", function (headers, address) {
+  // oh someone found us yay
+}).on("close", function () {
+  console.log("ssdp connection closed");
+}).start();
 
 process.on('exit', function(){
   clearInterval(interval);
