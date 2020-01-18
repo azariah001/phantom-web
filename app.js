@@ -192,7 +192,7 @@ app.get('/desc.xml', (req, res, next) => {
 app.get('/server/edit/:index', (req, res, next) => {
   let phantomServer = config[req.params.index];
   phantomServer.index = req.params.index;
-  res.render('edit', { title: 'Edit External Server', server: phantomServer })
+  res.render('edit', { title: 'Edit External Server', server: phantomServer, currentVersion: currentVersion, newVersion: newVersion || currentVersion })
 });
 
 app.post('/server/edit', (req, res, next) => {
@@ -215,7 +215,7 @@ app.post('/server/edit', (req, res, next) => {
 });
 
 app.get('/server/create', (req,res, next) => {
-  res.render('create', { title: 'Add External Server' });
+  res.render('create', { title: 'Add External Server', currentVersion: currentVersion, newVersion: newVersion || currentVersion });
 });
 
 app.post('/server/create', createServer, (req, res, next) => {
