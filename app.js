@@ -36,6 +36,7 @@ const ssdpHeader = {
 /**
  * handle peer ready event. This event will be emitted after `peer.start()` is called.
  */
+let interval;
 peer.on("ready",function(){
   // hey were over here! echo echo echo echo
   interval = setInterval(function(){
@@ -59,9 +60,10 @@ process.on('exit', function(){
 });
 
 let servers = [];
-let config = require("./config.json").servers;
+let config = require("./config.json").servers || [];
 const currentVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
 let newVersion;
+let updating = false;
 console.log(`Current Version: ${currentVersion}`);
 
 async function update() {
@@ -76,58 +78,74 @@ async function update() {
     console.log(`New Version: ${newVersion}`);
 
     if ( (currentVersion !== newVersion) || (stdout !== "Already up to date.\n") ) {
+      updating = true;
 
       installUpdate().then(() => {
-        console.log("Update Applied - Stopping");
+        console.log("Update Applied");
+
+        writeConfig();
+        console.log("Configuration saved.");
+
+        servers.forEach( (server, index) => {
+          server.kill('SIGHUP');
+          delete config[index].pid;
+        });
+        console.log("Phantom's slain.");
+
         updateTimer.clear();
+        console.log("Update scheduler leashed.");
+
+        console.log("Stopping SSDP service.");
+        clearInterval(interval);
+        peer.close();
+
+        console.log("Goodbye.");
         server.close();
+
+        sleep(2000);
+        //sometimes you just need to use a sledgehammer
+        process.exit();
       });
 
     }
   });
-
-  await sleep(5000);
-
-  // downloads latest version of phantom
-  if (process.platform === "linux") {
-    if (process.arch === "arm") {
-      child_process.exec(`curl -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'arm${process.config.variables.arm_version}' | head -n 1 | cut -d '"' -f 4 | xargs wget -N`)
-      await sleep(10000);
-      child_process.exec(`cp phantom-linux-arm${process.config.variables.arm_version} phantom`);
-    } else {
-      child_process.exec(`curl -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'linux' | head -n 1 | cut -d '"' -f 4 | xargs wget -N`);
-      await sleep(10000);
-      child_process.exec(`cp phantom-linux phantom`);
-    }
-    await sleep(500);
-    child_process.exec("chmod u+x ./phantom");
-  }
-  console.log("Phantom Updated")
 }
 
 async function installUpdate() {
-  child_process.exec("sudo chown ubuntu:ubuntu ./ -R", (error, stdout, stderr) => {
-    console.log(`${error}${stdout}${stderr}`);
-  });
+  console.log("Fix file permissions after update.");
+  child_process.exec("sudo chown ubuntu:ubuntu ./ -R");
+  child_process.exec("sudo chmod 775 ./");
+
   await sleep(500);
 
-  child_process.exec("sudo chmod 775 ./", (error, stdout, stderr) => {
-    console.log(`${error}${stdout}${stderr}`);
-  });
-  await sleep(500);
-
-  child_process.exec("npm install", (error, stdout, stderr) => {
-    console.log(stdout);
-  });
-  await sleep(10000);
+  console.log("Run npm install after update.");
+  child_process.execSync("npm install");
 }
 
 update().then(() => {
-  config.forEach( (server, index) => {
-    if (!!server.auto && !server.pid) {
-      startServer(index);
+  // downloads latest version of phantom
+  if (process.platform === "linux") {
+    if (process.arch === "arm") {
+      child_process.execSync(`curl -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'arm${process.config.variables.arm_version}' | head -n 1 | cut -d '"' -f 4 | xargs wget -N`);
+
+      child_process.execSync(`cp phantom-linux-arm${process.config.variables.arm_version} phantom`);
+    } else {
+      child_process.execSync(`curl -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'linux' | head -n 1 | cut -d '"' -f 4 | xargs wget -N && cp phantom-linux phantom`);
+
+      child_process.execSync(`cp phantom-linux phantom`);
     }
-  });
+
+    child_process.execSync("chmod u+x ./phantom");
+  }
+  console.log("Phantom Updated")
+}).then(() => {
+  if (!updating) {
+    config.forEach( (server, index) => {
+      if (!!server.auto && !server.pid) {
+        startServer(index);
+      }
+    });
+  }
 });
 
 let app = express();
@@ -167,6 +185,11 @@ server.on('listening', onListening);
 
 app.get('/', (req, res, next) => {
   res.render('index', { title: 'Servers', servers: config, currentVersion: currentVersion, newVersion: newVersion || currentVersion });
+});
+
+app.get('/update', (req,res,next) => {
+  update();
+  res.redirect('/');
 });
 
 // provide SSDP service description file with servers current IP address.
@@ -332,7 +355,7 @@ function writeConfig() {
       return console.log(err);
     }
 
-    console.log("The file was saved!");
+    console.log("Config written!");
   });
 
 }
