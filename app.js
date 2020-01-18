@@ -52,6 +52,7 @@ process.on('exit', function(){
 let servers = [];
 let config = require("./config.json").servers;
 const currentVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
+let newVersion;
 console.log(`Current Version: ${currentVersion}`);
 
 async function update() {
@@ -62,7 +63,7 @@ async function update() {
     console.log(stdout);
 
 
-    const newVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
+    newVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
     console.log(`New Version: ${newVersion}`);
 
     if ( (currentVersion !== newVersion) || (stdout !== "Already up to date.\n") ) {
@@ -156,7 +157,7 @@ server.on('listening', onListening);
 
 
 app.get('/', (req, res, next) => {
-  res.render('index', { title: 'Servers', servers: config });
+  res.render('index', { title: 'Servers', servers: config, currentVersion: currentVersion, newVersion: newVersion || currentVersion });
 });
 
 // provide SSDP service description file with servers current IP address.
@@ -189,9 +190,9 @@ app.get('/desc.xml', (req, res, next) => {
 });
 
 app.get('/server/edit/:index', (req, res, next) => {
-  let server = config[req.params.index];
-  server.index = req.params.index;
-  res.render('edit', { title: 'Edit External Server', server})
+  let phantomServer = config[req.params.index];
+  phantomServer.index = req.params.index;
+  res.render('edit', { title: 'Edit External Server', server: phantomServer })
 });
 
 app.post('/server/edit', (req, res, next) => {
