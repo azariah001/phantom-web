@@ -84,6 +84,8 @@ async function update() {
         console.log("Update Applied");
 
         writeConfig().then( () => {
+
+          // kill all running phantoms
           servers.forEach( (server, index) => {
             server.kill('SIGHUP');
             delete config[index].pid;
