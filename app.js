@@ -115,6 +115,7 @@ async function installUpdate() {
   console.log("Fix file permissions after update.");
   child_process.exec("sudo chown ubuntu:ubuntu ./ -R");
   child_process.exec("sudo chmod 775 ./");
+  child_process.exec("sudo chmod +x app.js");
 
   await sleep(500);
 
