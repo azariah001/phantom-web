@@ -83,28 +83,27 @@ async function update() {
       installUpdate().then(() => {
         console.log("Update Applied");
 
-        writeConfig();
-        console.log("Configuration saved.");
+        writeConfig().then( () => {
+          servers.forEach( (server, index) => {
+            server.kill('SIGHUP');
+            delete config[index].pid;
+          });
+          console.log("Phantom's slain.");
 
-        servers.forEach( (server, index) => {
-          server.kill('SIGHUP');
-          delete config[index].pid;
+          updateTimer.clear();
+          console.log("Update scheduler leashed.");
+
+          console.log("Stopping SSDP service.");
+          clearInterval(interval);
+          peer.close();
+
+          console.log("Goodbye.");
+          server.close();
+
+          //sometimes you just need to use a sledgehammer
+          process.exit();
         });
-        console.log("Phantom's slain.");
 
-        updateTimer.clear();
-        console.log("Update scheduler leashed.");
-
-        console.log("Stopping SSDP service.");
-        clearInterval(interval);
-        peer.close();
-
-        console.log("Goodbye.");
-        server.close();
-
-        sleep(2000);
-        //sometimes you just need to use a sledgehammer
-        process.exit();
       });
 
     }
@@ -341,7 +340,7 @@ function createServer(req, res, next) {
   next();
 }
 
-function writeConfig() {
+async function writeConfig() {
   let file = [];
   config.forEach( (server, index) => {
     file[index] = {};
@@ -351,13 +350,9 @@ function writeConfig() {
     file[index].auto = config[index].auto;
   });
 
-  fs.writeFile('./config.json', JSON.stringify({ "servers": file }), 'utf8', function (err) {
-    if (err) {
-      return console.log(err);
-    }
+  fs.writeFileSync('./config.json', JSON.stringify({ "servers": file }));
 
-    console.log("Config written!");
-  });
+  console.log("Configuration saved.");
 
 }
 
