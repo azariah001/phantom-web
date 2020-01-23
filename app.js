@@ -86,11 +86,12 @@ async function update() {
         writeConfig().then( () => {
 
           // kill all running phantoms
-          servers.forEach( (server, index) => {
+          if (servers.length) servers.forEach( (server, index) => {
             server.kill('SIGHUP');
             delete config[index].pid;
+            console.log("Phantom's slain.");
           });
-          console.log("Phantom's slain.");
+          console.log("It's day time. No phantom's to slay.");
 
           updateTimer.clear();
           console.log("Update scheduler leashed.");
@@ -113,15 +114,15 @@ async function update() {
 }
 
 async function installUpdate() {
+  console.log("Run npm install after update.");
+  child_process.execSync("npm install");
+
   console.log("Fix file permissions after update.");
   child_process.exec("sudo chown ubuntu:ubuntu ./ -R");
   child_process.exec("sudo chmod 775 ./");
   child_process.exec("sudo chmod +x app.js");
 
   await sleep(500);
-
-  console.log("Run npm install after update.");
-  child_process.execSync("npm install");
 }
 
 update().then(() => {
