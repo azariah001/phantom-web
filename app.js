@@ -13,7 +13,7 @@ let debug = require('debug')('phantom-web:server');
 let http = require('http');
 let later = require('later');
 
-let updateSchedule = later.parse.text('at 03:00am every day');
+let updateSchedule = later.parse.recur().every(1).dayOfMonth();
 let updateTimer = later.setInterval(update, updateSchedule);
 
 let os = require('os');
