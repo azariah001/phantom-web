@@ -13,7 +13,7 @@ let debug = require('debug')('phantom-web:server');
 let http = require('http');
 let later = require('later');
 
-let updateSchedule = later.parse.recur().every(1).dayOfMonth();
+let updateSchedule = later.parse.cron("0 3 * * *");
 let updateTimer = later.setInterval(update, updateSchedule);
 
 let os = require('os');
@@ -61,7 +61,7 @@ process.on('exit', function(){
 
 let servers = [];
 let config = require("./config.json").servers || [];
-const currentVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
+let currentVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
 let newVersion;
 let updating = false;
 console.log(`Current Version: ${currentVersion}`);
@@ -69,16 +69,18 @@ console.log(`Current Version: ${currentVersion}`);
 async function update() {
 
   console.log("Updating phantom-web to latest version.");
+  currentVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
 
+  child_process.execSync("git reset --hard");
   child_process.exec("git pull", (error, stdout, stderr) => {
-    console.log(stdout);
-
 
     newVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
     console.log(`New Version: ${newVersion}`);
 
     if ( (currentVersion !== newVersion) || (stdout !== "Already up to date.\n") ) {
       updating = true;
+
+      console.log("Applying update.");
 
       installUpdate().then(() => {
         console.log("Update Applied");
@@ -157,7 +159,7 @@ let app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
