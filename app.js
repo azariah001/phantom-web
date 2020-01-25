@@ -83,7 +83,7 @@ async function update() {
       console.log("Applying update.");
 
       installUpdate().then(() => {
-        console.log("Update Applied");
+        console.log("Update Applied.");
 
         writeConfig().then( () => {
 
