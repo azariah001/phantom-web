@@ -142,7 +142,7 @@ update().then(() => {
 
     child_process.execSync("chmod u+x ./phantom");
   }
-  console.log("Phantom Updated")
+  console.log("Phantom Updated.")
 }).then(() => {
   if (!updating) {
     config.forEach( (server, index) => {
