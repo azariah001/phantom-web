@@ -77,7 +77,7 @@ async function update() {
     newVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
     console.log(`New Version: ${newVersion}`);
 
-    if ( (currentVersion !== newVersion) || (stdout !== "Already up to date.\n") ) {
+    if ( (currentVersion !== newVersion) ) {
       updating = true;
 
       console.log("Applying update.");
