@@ -324,7 +324,7 @@ function startServer(index) {
 function stopServer(index) {
   servers.forEach( (server, i) => {
     if (server.pid === config[index].pid) {
-      console.log(`Stopping ${server.name} server.`);
+      console.log(`Stopping ${config[index].name} server.`);
       server.kill('SIGHUP');
       servers.slice(i, 1);
       delete config[index].pid;
