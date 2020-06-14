@@ -74,6 +74,8 @@ async function update() {
   child_process.execSync("git reset --hard");
   child_process.exec("git pull", (error, stdout, stderr) => {
 
+    writeConfig()
+
     newVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
     console.log(`New Version: ${newVersion}`);
 
