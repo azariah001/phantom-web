@@ -60,7 +60,23 @@ process.on('exit', function(){
 });
 
 let servers = [];
-let config = require("./config.json").servers || [];
+
+let config;
+try {
+  config = require("./config.json");
+
+  if (!config) {
+    config = { "servers": [] }
+  }
+
+} catch {
+  config = { "servers": [] }
+}
+
+config = config.servers || [];
+//config = require("./config.json").servers || [];
+
+
 let currentVersion = JSON.parse( fs.readFileSync('./package.json', 'utf8') ).version;
 let newVersion;
 let updating = false;
