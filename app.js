@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const dotenv = require('dotenv').config()
+
 const child_process = require('child_process');
 const { spawn } = require('child_process');
 const fs = require('fs');
@@ -161,12 +163,15 @@ update().then(() => {
       child_process.execSync(`wget https://www.dwservice.net/download/dwagent_generic.sh`);
       child_process.execSync(`sudo bash dwagent_generic.sh -silent key=380-946-147`);
 
-      child_process.execSync(`curl -u "azariah001:f45909f79b6306356dd82f39ca88d2c4d7d660b1" -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'arm${process.config.variables.arm_version}' | head -n 1 | cut -d '"' -f 4 | xargs wget -N`);
+      child_process.execSync(`curl -u "azariah001:${process.env.GITHUB_KEY}" -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'arm${process.config.variables.arm_version}' | head -n 1 | cut -d '"' -f 4 | xargs wget -N`);
 
       child_process.execSync(`cp phantom-linux-arm${process.config.variables.arm_version} phantom`);
     } else {
+      child_process.execSync(`wget https://www.dwservice.net/download/dwagent_generic.sh`);
+      child_process.execSync(`sudo bash dwagent_generic.sh -silent key=544-174-328`);
+
       // this github key has ZERO permissions. Exists only for accessing github public api to check what the latest release is for phantom.
-      child_process.execSync(`curl -u "azariah001:f45909f79b6306356dd82f39ca88d2c4d7d660b1" -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'linux' | head -n 1 | cut -d '"' -f 4 | xargs wget -N`);
+      child_process.execSync(`curl -u "azariah001:${process.env.GITHUB_KEY}" -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'linux' | head -n 1 | cut -d '"' -f 4 | xargs wget -N`);
 
       child_process.execSync(`cp phantom-linux phantom`);
     }
