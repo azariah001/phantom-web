@@ -367,7 +367,7 @@ app.use(function(err, req, res, next) {
 
 function startServer(index) {
   try {
-    servers.push( spawn("./phantom", ["-server", `${config[index].address}:${config[index].port}`] ) );
+    servers.push( spawn("./phantom", ["-server", `${config[index].address}:${config[index].port}`, "-workers", `${process.env.THREADS || 4}`] ) );
     config[index].pid = servers[servers.length - 1].pid;
     console.log(`${config[index].name} launched`);
   } catch (e) {
