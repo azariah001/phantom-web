@@ -173,6 +173,7 @@ update().then(() => {
 
       // if it hasn't already been installed
       if (!fs.existsSync('/usr/share/dwagent/native/dwagent.desktop')) {
+        console.log("install attempted");
         //child_process.execSync(`sudo bash dwagent_generic.sh -silent user=${process.env.DWS_USERNAME} password=${process.env.DWS_PASSWORD} name=${process.env.DWS_NAME} logpath=xxxxx`);
       }
 
