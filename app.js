@@ -180,9 +180,9 @@ update().then(() => {
       // deletes the dws credentials after install as they won't be required again and we don't want them hanging around for someone to hoover up
       let parsedFile = envfile.parse(fs.readFileSync('.env').toString());
       console.log(parsedFile);
-      /*parsedFile.DWS_USERNAME = '';
+      parsedFile.DWS_USERNAME = '';
       parsedFile.DWS_PASSWORD = '';
-      fs.writeFileSync('./.env', envfile.stringify(parsedFile));*/
+      fs.writeFileSync('./.env', envfile.stringify(parsedFile));
     }
 
     if (process.arch === "arm") {
