@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const dotenv = require('dotenv').config()
+const envfile = require('envfile');
 
 const child_process = require('child_process');
 const { spawn } = require('child_process');
@@ -159,16 +160,36 @@ update().then(() => {
 
   // downloads latest version of phantom
   if (process.platform === "linux") {
-    if (process.arch === "arm") {
+
+    // if a username and password for DWS have been provided in the env file the DWAgent will be installed.
+    if (process.env.DWS_USERNAME && process.env.DWS_PASSWORD) {
+
+      // just in case the dwagent install sh file exists, delete it so we get a fresh copy.
+      if (fs.existsSync(__dirname + '/dwagent_generic.sh')) {
+        child_process.execSync(`rm dwagent_generic.sh`);
+      }
+      // download the install sh file
       child_process.execSync(`wget https://www.dwservice.net/download/dwagent_generic.sh`);
-      child_process.execSync(`sudo bash dwagent_generic.sh -silent key=380-946-147`);
+
+      // if it hasn't already been installed
+      if (!fs.existsSync('/usr/share/dwagent/native/dwagent.desktop')) {
+        //child_process.execSync(`sudo bash dwagent_generic.sh -silent user=${process.env.DWS_USERNAME} password=${process.env.DWS_PASSWORD} name=${process.env.DWS_NAME} logpath=xxxxx`);
+      }
+
+      // deletes the dws credentials after install as they won't be required again and we don't want them hanging around for someone to hoover up
+      let parsedFile = envfile.parseFileSync('.env');
+      parsedFile.DWS_USERNAME = '';
+      parsedFile.DWS_PASSWORD = '';
+      fs.writeFileSync('./.env', envfile.stringifySync(parsedFile));
+    }
+
+    if (process.arch === "arm") {
 
       child_process.execSync(`curl -u "azariah001:${process.env.GITHUB_KEY}" -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'arm${process.config.variables.arm_version}' | head -n 1 | cut -d '"' -f 4 | xargs wget -N`);
 
       child_process.execSync(`cp phantom-linux-arm${process.config.variables.arm_version} phantom`);
+
     } else {
-      child_process.execSync(`wget https://www.dwservice.net/download/dwagent_generic.sh`);
-      child_process.execSync(`sudo bash dwagent_generic.sh -silent key=544-174-328`);
 
       // this github key has ZERO permissions. Exists only for accessing github public api to check what the latest release is for phantom.
       child_process.execSync(`curl -u "azariah001:${process.env.GITHUB_KEY}" -s https://api.github.com/repos/jhead/phantom/releases | grep browser_download_url | grep 'linux' | head -n 1 | cut -d '"' -f 4 | xargs wget -N`);

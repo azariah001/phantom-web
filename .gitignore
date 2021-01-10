@@ -3,4 +3,6 @@
 /phantom
 /phantom-linux
 /config.json
-config.json
+/config.bak.json
+/.env
+/dwagent_generic.sh
