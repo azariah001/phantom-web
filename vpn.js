@@ -1,0 +1,6 @@
+
+class VPN {
+  constructor() {
+
+  }
+}
