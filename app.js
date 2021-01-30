@@ -116,26 +116,8 @@ async function update() {
 
         writeConfig().then( () => {
 
-          // kill all running phantoms
-          if (servers.length) servers.forEach( (server, index) => {
-            server.kill('SIGHUP');
-            delete config[index].pid;
-            console.log("Phantom's slain.");
-          });
-          console.log("It's day time. No phantom's to slay.");
+          shutdown();
 
-          updateTimer.clear();
-          console.log("Update scheduler leashed.");
-
-          console.log("Stopping SSDP service.");
-          clearInterval(interval);
-          peer.close();
-
-          console.log("Goodbye.");
-          server.close();
-
-          //sometimes you just need to use a sledgehammer
-          process.exit();
         });
 
       });
@@ -144,6 +126,35 @@ async function update() {
   });
 }
 
+async function shutdown() {
+  // kill all running phantoms
+  if (servers.length) {
+    console.log("It's dawn the phantom's are ablaze.")
+
+    servers.forEach( (server, index) => {
+      server.kill('SIGHUP');
+      delete config[index].pid;
+      console.log(`Phantom ${index} died.`);
+    });
+  } else {
+    console.log("It's day time. No phantom's to slay.");
+  }
+
+  updateTimer.clear();
+  console.log("Update scheduler leashed.");
+
+  console.log("Stopping SSDP service.");
+  clearInterval(interval);
+  peer.close();
+
+  console.log("Goodbye.");
+  server.close();
+
+  //sometimes you just need to use a sledgehammer
+  setTimeout(()=> {
+    process.exit();
+  }, 1000);
+}
 async function installUpdate() {
   console.log("Run npm install after update.");
   child_process.execSync("npm install");
@@ -174,7 +185,7 @@ update().then(() => {
       // if it hasn't already been installed
       if (!fs.existsSync('/usr/share/dwagent/native/dwagent.desktop')) {
         console.log("install attempted");
-        //child_process.execSync(`sudo bash dwagent_generic.sh -silent user=${process.env.DWS_USERNAME} password=${process.env.DWS_PASSWORD} name=${process.env.DWS_NAME} logpath=xxxxx`);
+        child_process.execSync(`sudo bash dwagent_generic.sh -silent user=${process.env.DWS_USERNAME} password=${process.env.DWS_PASSWORD} name=${process.env.DWS_NAME} logpath=xxxxx`);
       }
 
       // deletes the dws credentials after install as they won't be required again and we don't want them hanging around for someone to hoover up
